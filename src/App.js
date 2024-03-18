@@ -1,55 +1,64 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { BrowserRouter } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+import Nav from "./Nav";
+import DogList from "./DogList";
+import DogDetails from "./DogDetails";
 
-import RouteList from "./RouteList";
-import NavBar from "./NavBar";
-
-/**
- * App
- *
- * state:
-  * dogs: [{name...}]
-  * isLoading: bool
- *
- * props: none
- *
- * App -> RouteList
- *
- */
-
-function App() {
-  const [dogs, setDogs] = useState({
-    data: null,
-    isLoading: true
-  });
-
-  useEffect(() => {
-    async function loadDogs(){
-      const response = await axios.get("http://localhost:5001/dogs")
-      setDogs({
-        data: response.data,
-        isLoading: false
-      })
-    }
-    loadDogs()
-  }, [])
-
-  if (dogs.isLoading) {
-    return <h1>Loading...</h1>
-  }
-
+function App(props) {
   return (
-    <div>
-      <h1>Welcome!</h1>
-      <BrowserRouter>
-        <NavBar dogs={dogs.data} />
-        <div className="container">
-          <RouteList dogs={dogs.data} />
-        </div>
-      </BrowserRouter>
-    </div>
+    <Router>
+      <div className="container">
+        <Nav dogs={props.dogs} />
+        <Routes>
+          <Route path="/dogs" element={<DogList dogs={props.dogs} />} />
+          <Route
+            path="/dogs/:name"
+            element={<DogDetails dogs={props.dogs} />}
+          />
+          <Route path="*" element={<Navigate to="/dogs" />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
+
+App.defaultProps = {
+  dogs: [
+    {
+      name: "Whiskey",
+      age: 5,
+      src: "/whiskey.jpg",
+      facts: [
+        "Whiskey loves eating popcorn.",
+        "Whiskey is a terrible guard dog.",
+        "Whiskey wants to cuddle with you!",
+      ],
+    },
+    {
+      name: "Duke",
+      age: 3,
+      src: "/duke.jpg",
+      facts: [
+        "Duke believes that ball is life.",
+        "Duke likes snow.",
+        "Duke enjoys pawing other dogs.",
+      ],
+    },
+    {
+      name: "Perry",
+      age: 4,
+      src: "/perry.jpg",
+      facts: [
+        "Perry loves all humans.",
+        "Perry demolishes all snacks.",
+        "Perry hates the rain.",
+      ],
+    },
+  ],
+};
 
 export default App;

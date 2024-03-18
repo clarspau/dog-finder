@@ -1,38 +1,26 @@
+import { useParams } from "react-router-dom";
 
-import React from "react";
-import { Link, Navigate } from "react-router-dom";
-import "./DogDetails.css";
+function DogDetails(props) {
+  let { name } = useParams();
+  let dog = props.dogs.find((d) => d.name.toLowerCase() === name.toLowerCase());
 
-/**
- * DogDetails
- *
- * state: none
- *
- * props:
-  * dog: {name, src}
- *
- *
-  * FilterDogDetails -> DogDetails
- *
- */
-
-function DogDetails({ dog }) {
-
-  if (!dog) return <Navigate to="/dogs" />
+  if (!dog) return <h2>No dog found!</h2>;
 
   return (
-    <div className="row DogDetails">
-      <div className="col d-flex flex-column align-items-center">
-        <img src={`/${dog.src}.jpg`} alt={dog.name} />
-        <h2>{dog.name}</h2>
-        <h3>{dog.age} years old</h3>
-        <ul>
-          {dog.facts.map((fact, i) => (
-            <li key={i}>{fact}</li>
-          ))}
-        </ul>
-        <Link to="/dogs">Go Back</Link>
-      </div>
+    <div className="mt-5">
+      <h2 className="text-center">{dog.name}</h2>
+      <img
+        className="img-fluid rounded mx-auto d-block"
+        src={dog.src}
+        alt={dog.name}
+      />
+      <ul className="list-group mt-4">
+        {dog.facts.map((fact, index) => (
+          <li className="list-group-item" key={index}>
+            {fact}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
